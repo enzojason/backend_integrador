@@ -32,3 +32,9 @@ class CanalController():
         else:
             return {"message":"no existen canales"},404
         
+    @classmethod
+    @jwt_required()
+    def mostrar_canal(cls,nombre_canal):
+        canal=Canal.get_canal(Canal(nombre_canal=nombre_canal))
+        print("CANAL MOSTRAR ",canal)
+        return canal,200

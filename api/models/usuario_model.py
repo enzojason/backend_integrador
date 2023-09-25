@@ -79,7 +79,7 @@ class Usuario:
 
     @classmethod
     def update_usuario(cls,campo,valor,id_usuario):
-        query= f"UPDATE proyecto_bdd.usuarios SET usuarios.{campo} = '{valor}' WHERE id_usuario = {id_usuario}"
+        query= f"UPDATE proyecto_bdd.usuarios SET usuarios.{campo} = '{valor}' WHERE id_usuario = {id_usuario};"
         
         result = DatabaseConnection.execute_query(query)
 
@@ -89,7 +89,7 @@ class Usuario:
     
     @classmethod
     def get_user_id(cls, user):
-        query = """SELECT * FROM proyecto_bdd.usuarios 
+        query = """SELECT id_usuario,username,contrasena,email,nombre_usuario,apellido_usuario,fecha_creacion FROM proyecto_bdd.usuarios 
         WHERE id_usuario = %(id_usuario)s;"""
         params = user.__dict__
         result = DatabaseConnection.fetch_one(query, params=params)
@@ -103,6 +103,21 @@ class Usuario:
                 nombre_usuario = result[4],
                 apellido_usuario = result[5],
                 fecha_creacion = result[6],
-                imagen_perfil = result[7],
+                
             )
         return None
+    
+    @classmethod
+    def update_imagen(cls, valor,id_usuario):
+        #crea/registra un nuevo usuario
+        query = """UPDATE proyecto_bdd.usuarios SET usuarios.imagen_perfil=%s WHERE id_usuario=%s;"""
+        params = valor,id_usuario,
+        DatabaseConnection.execute_query(query, params=params)
+
+    @classmethod
+    def load_imagen(cls,id_usuario):
+        #crea/registra un nuevo usuario
+        query = """SELECT imagen_perfil FROM proyecto_bdd.usuarios WHERE id_usuario=%s;"""
+        params = id_usuario,
+        result=DatabaseConnection.fetch_one(query, params=params)
+        return result[0]

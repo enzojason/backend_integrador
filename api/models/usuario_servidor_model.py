@@ -49,7 +49,6 @@ class UsuarioServidor():
         result = DatabaseConnection.fetch_all(query)
         servidores=[]
         if result is not None:
-            print("RESULT ",result)
             for results in result:
                 for servers in results:
                     servidores.append(servers)

@@ -37,29 +37,22 @@ class Mensaje:
     def get_messages(cls,id_canal):
         #obtiene todos los mensajes de un canal
         query=f"SELECT mensajes.id_mensaje,usuarios.username,mensajes.fecha,mensajes.mensaje FROM proyecto_bdd.mensajes INNER JOIN proyecto_bdd.usuarios ON mensajes.id_usuario = usuarios.id_usuario WHERE mensajes.id_canal = {id_canal} ORDER BY mensajes.fecha ASC; "
+        #query=f"SELECT mensajes.id_mensaje,usuarios.username,mensajes.fecha,mensajes.mensaje,canales.descripcion FROM ((proyecto_bdd.mensajes INNER JOIN proyecto_bdd.usuarios ON mensajes.id_usuario = usuarios.id_usuario) INNER JOIN proyecto_bdd.canales ON mensajes.id_canal=canales.id_canal) WHERE mensajes.id_canal = {id_canal} ORDER BY mensajes.fecha ASC; "
         result = DatabaseConnection.fetch_all(query)
         mensajes=[]
-        print("RESULT ",result)
-        if result is not None and len(mensajes)!= 0:
-            for id_mensaje,username,fecha,mensaje in result:
-                mensajes.append({
-                    "id_mensaje" : id_mensaje,
-                    "username" : username,
-                    "dia" : fecha.strftime("%d %b,%y"),
-                    "hora" : fecha.strftime("%H:%M"),
-                    "mensaje" : mensaje
-                })
-            #print(list(map(lambda x: x.strftime("%d"),fechas)))
-            return mensajes
-        else:
-            return None
         
-        """if result is not None:
-            return cls(
-            id_mensaje = result[0],
-            mensaje = result[1],
-            fecha = result[2],
-            hora = result[3],
-            id_usuario = result[4],
-            id_canal = result[5]
-            )"""
+        for id_mensaje,username,fecha,mensaje in result:
+            mensajes.append({
+                "id_mensaje" : id_mensaje,
+                "username" : username,
+                "dia" : fecha.strftime("%d %b,%y"),
+                "hora" : fecha.strftime("%H:%M"),
+                "mensaje" : mensaje,
+
+            })
+        if len(mensajes) == 0:
+            return None
+        else:
+            return mensajes
+        
+        

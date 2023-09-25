@@ -11,7 +11,11 @@ class MensajeController:
         id_usuario=get_jwt_identity()
         canal=Canal.get_canal(Canal(nombre_canal=nombre_canal))
         Mensaje.create_mensaje(mensaje,id_usuario,canal.id_canal)
-        return {"message":"crear mensaje"}
+        mensajes=Mensaje.get_messages(canal.id_canal)
+        if mensajes is not None:
+            return mensajes,200
+        else:
+            return{"message":"no hay mensajes"},404
     
     @classmethod
     @jwt_required()
@@ -19,10 +23,18 @@ class MensajeController:
         #mostrar los mensajes del canal
         canal=Canal.get_canal(Canal(nombre_canal=nombre_canal))
         mensajes=Mensaje.get_messages(canal.id_canal)
-        if mensajes is not None:
-            return mensajes,200
-        else:
-            return{"message":"no hay mensajes"},404
         
-    
+        if mensajes is not None:
+            return {"mensajes":mensajes,
+                    "nombre_canal":canal.nombre_canal,
+                    "descripcion":canal.descripcion,
+                    "fecha_creacion":canal.fecha_creacion
+                    },200
+        else:
+            return{"nombre_canal":canal.nombre_canal,
+                    "descripcion":canal.descripcion,
+                    "fecha_creacion":canal.fecha_creacion,
+                    "message":"no hay mensajes"
+                    },404
+        
     

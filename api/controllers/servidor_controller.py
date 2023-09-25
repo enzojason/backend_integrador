@@ -40,7 +40,7 @@ class ServidorController:
     def mostrar_servidores(cls):
         id_usuario=get_jwt_identity()
         result=UsuarioServidor.get_servers(id_usuario)
-        if result is not None:
+        if result is not None: 
             return { "servidores": result }, 200
         else:
             return {"message":"no existen servidores"},404

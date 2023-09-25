@@ -4,6 +4,7 @@ from config import Config
 from .routes.auth_bp import auth_bp
 from .routes.archivos_bp import archivos_bp
 from .routes.servidor_bp import serve_bp
+from .routes.mensaje_bp import mensaje_bp
 from .routes.canal_bp import canal_bp
 from .database import DatabaseConnection
 from config import Config
@@ -30,5 +31,5 @@ def init_app():
     app.register_blueprint(archivos_bp,url_prefix= '/static')
     app.register_blueprint(serve_bp,url_prefix= '/server')
     app.register_blueprint(canal_bp,url_prefix= '/canal')
-
+    app.register_blueprint(mensaje_bp,url_prefix= '/message')
     return app

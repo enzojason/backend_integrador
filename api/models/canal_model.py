@@ -1,24 +1,26 @@
 from ..database import DatabaseConnection
-
+from flask import jsonify
 class Canal:
     """Modelo clase de canal"""
     def __init__(self, 
                 id_canal = None,
                 nombre_canal = None, 
                 fecha_creacion = None,
-                descripcion = None,):
+                descripcion = None,
+                id_servidor  = None,):
         "Constructor"
         self.id_canal = id_canal
         self.nombre_canal = nombre_canal
         self.fecha_creacion = fecha_creacion
         self.descripcion = descripcion
-
+        self.id_servidor = id_servidor
     def serialize(self):
         return {
             "id_canal": self.id_canal,
             "nombre_canal": self.nombre_canal,
             "fecha_creacion": self.fecha_creacion,
-            "descripcion" :self.descripcion
+            "descripcion" :self.descripcion,
+            "id_servidor" : self.id_servidor
                 }
     
     @classmethod
@@ -48,19 +50,20 @@ class Canal:
     @classmethod
     def get_canal(cls,canal):
         #consigue el canal segun el nombre del canal
-        query = """SELECT * FROM proyecto_bdd.canales 
+        query = """SELECT id_canal,nombre_canal,fecha_creacion,descripcion,id_servidor FROM proyecto_bdd.canales 
         WHERE nombre_canal = %(nombre_canal)s ;"""
-        params = canal.__dict__
+        params = canal.__dict__ 
         result = DatabaseConnection.fetch_one(query, params=params)
 
         if result is not None:
             return cls(
                 id_canal = result[0],
-                nombre_canal = result[1],
+                nombre_canal = result[1], 
                 fecha_creacion = result[2],
-                descripcion = result[3]
+                descripcion = result[3],
+                id_servidor  = result[4],
             )
         else:
             return None
         
-       
+        

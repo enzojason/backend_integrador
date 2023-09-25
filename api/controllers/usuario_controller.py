@@ -1,7 +1,7 @@
 from ..models.usuario_model import Usuario
-from flask import request
+from flask import request,jsonify
 from flask_jwt_extended import create_access_token,get_jwt_identity,jwt_required
-
+import io
 
 class UsuarioController:
     @classmethod
@@ -22,9 +22,7 @@ class UsuarioController:
     @classmethod
     @jwt_required()
     def show_profile(cls):
-        print("La función getProfile se ha ejecutado.")
         id_usuario = get_jwt_identity()
-        print("SESION PROFILE ", id_usuario)
         user = Usuario.get_user_id(Usuario(id_usuario=id_usuario))
         if user is None:
             return {"message": "Usuario no encontrado"}, 404
@@ -60,7 +58,6 @@ class UsuarioController:
         print("La función update_profile se ha ejecutado.")
         id_usuario = get_jwt_identity()
         data=request.json
-
         #verifica cada uno, y sube a la bdd
         if 'username' in data:
             username = data.get('username')
@@ -83,3 +80,22 @@ class UsuarioController:
             Usuario.update_usuario('email',email,id_usuario)
 
         return {"actualizado":"exitosos"},200
+    
+    @classmethod
+    @jwt_required()
+    def update_image(cls):
+        #actualiza la imagen de perfil de un usuario
+        blob_data = request.data
+        id_usuario=get_jwt_identity()
+        bytes_data = bytes(blob_data)
+        Usuario.update_imagen(bytes_data,id_usuario)
+        return {"imagen":"cargada"}
+
+    @classmethod
+    @jwt_required()
+    def load_image(cls):
+        #devuelve la imagen de perfil del usuario
+        id_usuario=get_jwt_identity()
+        data_bytes=Usuario.load_imagen(id_usuario)
+        blob = io.BytesIO(data_bytes).read()
+        return blob
