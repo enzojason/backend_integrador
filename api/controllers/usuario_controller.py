@@ -1,4 +1,5 @@
 from ..models.usuario_model import Usuario
+from ..models.imagen_model import Imagen
 from flask import request,jsonify
 from flask_jwt_extended import create_access_token,get_jwt_identity,jwt_required
 import io
@@ -28,13 +29,6 @@ class UsuarioController:
             return {"message": "Usuario no encontrado"}, 404
         else:
             return user.serialize(), 200
-
-    """@classmethod
-    @jwt_required()
-    def logout(cls):
-        resp = jsonify(message='Cierre de sesión exitoso')
-        unset_jwt_cookies(resp)
-        return resp, 200"""
     
     @classmethod
     def create(cls):
@@ -46,8 +40,8 @@ class UsuarioController:
             email = data.get('email'),
             nombre_usuario = data.get('nombre'),
             apellido_usuario = data.get('apellido'),
-            imagen_perfil= "/static/imagenes/foto_de_perfil.png"
-            #el id rol y la imagen de perfil van por defecto
+            imagen_perfil= ""
+            
             )
         Usuario.create_usuario(user)
         return user.serialize(),201
@@ -55,7 +49,6 @@ class UsuarioController:
     @classmethod
     @jwt_required()
     def update_profile(cls):
-        print("La función update_profile se ha ejecutado.")
         id_usuario = get_jwt_identity()
         data=request.json
         #verifica cada uno, y sube a la bdd
@@ -88,14 +81,14 @@ class UsuarioController:
         blob_data = request.data
         id_usuario=get_jwt_identity()
         bytes_data = bytes(blob_data)
-        Usuario.update_imagen(bytes_data,id_usuario)
-        return {"imagen":"cargada"}
+        Imagen.update_imagen(bytes_data,id_usuario)
+        return {"imagen":"cargada"},200
 
     @classmethod
     @jwt_required()
     def load_image(cls):
         #devuelve la imagen de perfil del usuario
         id_usuario=get_jwt_identity()
-        data_bytes=Usuario.load_imagen(id_usuario)
+        data_bytes=Imagen.load_imagen(id_usuario)
         blob = io.BytesIO(data_bytes).read()
         return blob

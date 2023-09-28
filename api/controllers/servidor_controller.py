@@ -22,7 +22,6 @@ class ServidorController:
     @classmethod
     @jwt_required()
     def join(cls,nombre_servidor):
-        print("JOIN ",nombre_servidor)
         id_usuario=get_jwt_identity()
         serv=Servidor.get(Servidor(nombre_servidor=nombre_servidor))
         if serv is None:
@@ -45,3 +44,10 @@ class ServidorController:
         else:
             return {"message":"no existen servidores"},404
         
+    @classmethod
+    def buscar_servidor(cls,nombre):
+        servidores=Servidor.search_all(nombre)
+        if servidores is not None:
+            return {"servidores":servidores},200
+        else:
+            return {"message":"no hay servidores encontrados"},404

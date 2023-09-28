@@ -1,6 +1,0 @@
-Librerias:
-    pip install flask-jwt-extended
-    pip install Pillow
-
-Consultas:
-    select id_usuario,username,contrasena,nombre_usuario,apellido_usuario,email,id_rol from proyecto_bdd.usuarios;

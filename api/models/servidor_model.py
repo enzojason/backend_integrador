@@ -48,4 +48,19 @@ class Servidor:
         else:
             return None
         
-    
+    @classmethod
+    def search_all(cls,nombre):
+        #buscar y devuelve todos los servidores que coincidan con el nombre
+        query=f"SELECT servidores.nombre_servidor, COUNT(usuario_servidor.id_usuario_servidor) as cantidad_usuarios FROM servidores INNER JOIN usuario_servidor on servidores.id_servidor =usuario_servidor.id_servidor WHERE servidores.nombre_servidor LIKE '{nombre}%' GROUP BY nombre_servidor;"
+        result = DatabaseConnection.fetch_all(query,nombre)
+        resultado=[]
+        for nombre,cantidad in result:
+            resultado.append({
+                "nombre_servidor":nombre,
+                "cantidad_usuarios":cantidad
+                }
+                )
+        if len(resultado) == 0:
+            return None
+        else:
+            return resultado

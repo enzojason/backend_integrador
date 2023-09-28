@@ -27,6 +27,24 @@ class Mensaje:
         }
     
     @classmethod
+    def get_message_id(cls, message):
+        #consigue segun el username
+        query = """SELECT * FROM proyecto_bdd.mensajes 
+        WHERE id_mensaje = %(id_mensaje)s ;"""
+        params = message.__dict__
+        result = DatabaseConnection.fetch_one(query, params=params)
+
+        if result is not None:
+            return cls(
+                id_mensaje = result[0],
+                mensaje = result[1],
+                fecha = result[2],
+                id_usuario = result[3],
+                id_canal = result[4]
+            )
+        return None
+    
+    @classmethod
     def create_mensaje(cls,mensaje,id_usuario,id_canal):
         #crea/registra un mensaje en la bdd
         query = """INSERT INTO proyecto_bdd.mensajes (mensaje,id_usuario,id_canal) VALUES (%s,%s,%s);"""
@@ -45,7 +63,7 @@ class Mensaje:
             mensajes.append({
                 "id_mensaje" : id_mensaje,
                 "username" : username,
-                "dia" : fecha.strftime("%d %b,%y"),
+                "dia" : fecha.strftime("%d %b,%Y"),
                 "hora" : fecha.strftime("%H:%M"),
                 "mensaje" : mensaje,
 
@@ -55,4 +73,11 @@ class Mensaje:
         else:
             return mensajes
         
-        
+    @classmethod
+    def upload_message(cls,nuevomensaje,id_mensaje):
+        #actualiza el mensaje recibido segun el id_mensaje
+        query= f"UPDATE proyecto_bdd.mensajes SET mensajes.mensaje = '{nuevomensaje}' WHERE id_mensaje = {id_mensaje};"
+        result = DatabaseConnection.execute_query(query)
+        if result is not None:
+            return True
+        return False

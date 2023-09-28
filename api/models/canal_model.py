@@ -32,17 +32,20 @@ class Canal:
         if result is not None:
             return result
         else:
-            return None
+            return None 
         
     @classmethod
     def get_canals(cls,id_servidor):
         #obtiene lista de nombres de canales, que pertenece a un servidor
-        query = f"SELECT nombre_canal,fecha_creacion,descripcion FROM proyecto_bdd.canales WHERE canales.id_servidor = {id_servidor};"
+        query = f"SELECT id_canal,nombre_canal FROM proyecto_bdd.canales WHERE canales.id_servidor = {id_servidor};"
         result = DatabaseConnection.fetch_all(query)
         canales=[]
         if result is not None:
-            for nombre,fecha,descripcion in result:
-                canales.append(nombre)
+            for id,nombre in result:
+                canales.append({
+                    "nombre_canal":nombre,
+                    "id_canal":id,
+                })
             return canales
         else:
             return None
@@ -51,7 +54,7 @@ class Canal:
     def get_canal(cls,canal):
         #consigue el canal segun el nombre del canal
         query = """SELECT id_canal,nombre_canal,fecha_creacion,descripcion,id_servidor FROM proyecto_bdd.canales 
-        WHERE nombre_canal = %(nombre_canal)s ;"""
+        WHERE id_canal = %(id_canal)s ;"""
         params = canal.__dict__ 
         result = DatabaseConnection.fetch_one(query, params=params)
 

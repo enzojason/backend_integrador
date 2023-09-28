@@ -1,6 +1,5 @@
 from flask import request
 from ..models.canal_model import Canal
-from ..models.servidor_canal import ServidorCanal
 from ..models.servidor_model import Servidor
 from flask_jwt_extended import jwt_required,get_jwt_identity
 
@@ -34,7 +33,6 @@ class CanalController():
         
     @classmethod
     @jwt_required()
-    def mostrar_canal(cls,nombre_canal):
-        canal=Canal.get_canal(Canal(nombre_canal=nombre_canal))
-        print("CANAL MOSTRAR ",canal)
+    def mostrar_canal(cls,id_canal):
+        canal=Canal.get_canal(Canal(id_canal=id_canal))
         return canal,200
